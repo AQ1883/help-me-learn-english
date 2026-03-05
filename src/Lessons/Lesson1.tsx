@@ -25,13 +25,20 @@ type PropsLesson = {
   sentence5Ar: string;
 };
 
-const HighlightText = ({ text, word, color = "blue" }) => {
-  if (!word) return text;
+type HighlightTextProps = {
+  text: string;
+  word: string;
+  color?: string;
+};
+
+const HighlightText = ({ text, word, color = "blue" }: HighlightTextProps) => {
+  if (!word) return <>{text}</>;
+
   const parts = text.split(new RegExp(`(${word})`, "gi"));
 
   return (
     <>
-      {parts.map((part, index) =>
+      {parts.map((part: string, index: number) =>
         part.toLowerCase() === word.toLowerCase() ? (
           <span key={index} style={{ color, fontWeight: "bold" }}>
             {part}
@@ -69,23 +76,27 @@ function Lesson1({
   const words = [word1, word2, word3, word4, word5];
   const wordsAr = [word1Ar, word2Ar, word3Ar, word4Ar, word5Ar];
   const sentences = [sentence1, sentence2, sentence3, sentence4, sentence5];
-  const sentencesAr = [sentence1Ar, sentence2Ar, sentence3Ar, sentence4Ar, sentence5Ar];
+  const sentencesAr = [
+    sentence1Ar,
+    sentence2Ar,
+    sentence3Ar,
+    sentence4Ar,
+    sentence5Ar,
+  ];
 
-  // ✅ مراجع الصوت للكلمات
   const audioRefsWords = useRef<Array<HTMLAudioElement | null>>([]);
-  // ✅ مراجع الصوت للجمل
   const audioRefsSentences = useRef<Array<HTMLAudioElement | null>>([]);
 
   const playAudio = (index: number, type: "word" | "sentence") => {
-    // 🔹 إيقاف جميع الأصوات عند تشغيل أي صوت جديد
-    [...audioRefsWords.current, ...audioRefsSentences.current].forEach((audio) => {
-      if (audio) {
-        audio.pause();
-        audio.currentTime = 0;
+    [...audioRefsWords.current, ...audioRefsSentences.current].forEach(
+      (audio) => {
+        if (audio) {
+          audio.pause();
+          audio.currentTime = 0;
+        }
       }
-    });
+    );
 
-    // 🔹 تشغيل الصوت المطلوب
     if (type === "word" && audioRefsWords.current[index]) {
       audioRefsWords.current[index]?.play();
     } else if (type === "sentence" && audioRefsSentences.current[index]) {
@@ -95,7 +106,6 @@ function Lesson1({
 
   return (
     <div id="day1" className="text-3xl font-light container mx-auto">
-      {/* ✅ الكلمات مع زر الصوت */}
       {words.map((word, index) => (
         <div className="pt-4" key={index}>
           <div className="flex justify-between items-center">
@@ -114,22 +124,26 @@ function Lesson1({
             <h1>{wordsAr[index]}</h1>
           </div>
 
-          {/* ✅ ملف الصوت الخاص بالكلمة */}
           <audio
-            ref={(el) => (audioRefsWords.current[index] = el)}
+            ref={(el) => {
+              audioRefsWords.current[index] = el;
+            }}
             src={`/Audios/Words/${words[index]}.mp3`}
-          ></audio>
+          />
         </div>
       ))}
 
-      {/* ✅ الجمل تحت بعضها بدون سهم */}
       {sentences.map((sentence, index) => (
         <div className="pt-6" key={index}>
-          {/* ✅ الجملة الإنجليزية مع زر الصوت */}
           <div className="flex items-center gap-2">
             <h1>
-              <HighlightText text={sentence} word={words[index]} color="orange" />
+              <HighlightText
+                text={sentence}
+                word={words[index]}
+                color="orange"
+              />
             </h1>
+
             <button
               className="px-3 py-1 rounded-full cursor-pointer hover:scale-110 transition duration-300 text-gray-600 hover:text-black"
               onClick={() => playAudio(index, "sentence")}
@@ -138,14 +152,14 @@ function Lesson1({
             </button>
           </div>
 
-          {/* ✅ الجملة العربية تحت الجملة الإنجليزية */}
           <h1 className="mt-2">{sentencesAr[index]}</h1>
 
-          {/* ✅ ملف الصوت الخاص بالجملة */}
           <audio
-            ref={(el) => (audioRefsSentences.current[index] = el)}
+            ref={(el) => {
+              audioRefsSentences.current[index] = el;
+            }}
             src={`/Audios/Sentences1/${index + 1}.mp3`}
-          ></audio>
+          />
         </div>
       ))}
     </div>
