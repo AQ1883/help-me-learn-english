@@ -25,13 +25,20 @@ type PropsLesson = {
   sentence5Ar: string;
 };
 
-const HighlightText = ({ text, word, color = "blue" }) => {
-  if (!word) return text;
+type HighlightTextProps = {
+  text: string;
+  word: string;
+  color?: string;
+};
+
+const HighlightText = ({ text, word, color = "blue" }: HighlightTextProps) => {
+  if (!word) return <>{text}</>;
+
   const parts = text.split(new RegExp(`(${word})`, "gi"));
 
   return (
     <>
-      {parts.map((part, index) =>
+      {parts.map((part: string, index: number) =>
         part.toLowerCase() === word.toLowerCase() ? (
           <span key={index} style={{ color, fontWeight: "bold" }}>
             {part}

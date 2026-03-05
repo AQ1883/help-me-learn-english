@@ -1,4 +1,3 @@
-import { Button, ButtonGroup } from "@material-tailwind/react";
 
 function Section2() {
   return (
