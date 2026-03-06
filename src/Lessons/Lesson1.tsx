@@ -84,8 +84,8 @@ function Lesson1({
     sentence5Ar,
   ];
 
-  const audioRefsWords = useRef<Array<HTMLAudioElement | null>>([]);
-  const audioRefsSentences = useRef<Array<HTMLAudioElement | null>>([]);
+  const audioRefsWords = useRef<(HTMLAudioElement | null)[]>([]);
+  const audioRefsSentences = useRef<(HTMLAudioElement | null)[]>([]);
 
   const playAudio = (index: number, type: "word" | "sentence") => {
     [...audioRefsWords.current, ...audioRefsSentences.current].forEach(
@@ -97,9 +97,9 @@ function Lesson1({
       }
     );
 
-    if (type === "word" && audioRefsWords.current[index]) {
+    if (type === "word") {
       audioRefsWords.current[index]?.play();
-    } else if (type === "sentence" && audioRefsSentences.current[index]) {
+    } else {
       audioRefsSentences.current[index]?.play();
     }
   };
@@ -108,9 +108,10 @@ function Lesson1({
     <div id="day1" className="text-3xl font-light container mx-auto">
       {words.map((word, index) => (
         <div className="pt-4" key={index}>
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center relative">
             <div className="flex items-center gap-2">
               <h1>{word}</h1>
+
               <button
                 className="px-3 py-1 rounded-full cursor-pointer hover:scale-110 transition duration-300 text-gray-600 hover:text-black"
                 onClick={() => playAudio(index, "word")}
@@ -119,13 +120,13 @@ function Lesson1({
               </button>
             </div>
 
-            <HiArrowLongRight className="absolute left-[50%]" />
+            <HiArrowLongRight className="absolute left-1/2 -translate-x-1/2" />
 
             <h1>{wordsAr[index]}</h1>
           </div>
 
           <audio
-            ref={(el) => {
+            ref={(el: HTMLAudioElement | null) => {
               audioRefsWords.current[index] = el;
             }}
             src={`/Audios/Words/${words[index]}.mp3`}
@@ -155,7 +156,7 @@ function Lesson1({
           <h1 className="mt-2">{sentencesAr[index]}</h1>
 
           <audio
-            ref={(el) => {
+            ref={(el: HTMLAudioElement | null) => {
               audioRefsSentences.current[index] = el;
             }}
             src={`/Audios/Sentences1/${index + 1}.mp3`}

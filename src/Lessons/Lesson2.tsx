@@ -76,38 +76,42 @@ function Lesson2({
   const words = [word1, word2, word3, word4, word5];
   const wordsAr = [word1Ar, word2Ar, word3Ar, word4Ar, word5Ar];
   const sentences = [sentence1, sentence2, sentence3, sentence4, sentence5];
-  const sentencesAr = [sentence1Ar, sentence2Ar, sentence3Ar, sentence4Ar, sentence5Ar];
+  const sentencesAr = [
+    sentence1Ar,
+    sentence2Ar,
+    sentence3Ar,
+    sentence4Ar,
+    sentence5Ar,
+  ];
 
-  // ✅ مراجع الصوت للكلمات
-  const audioRefsWords = useRef<Array<HTMLAudioElement | null>>([]);
-  // ✅ مراجع الصوت للجمل
-  const audioRefsSentences = useRef<Array<HTMLAudioElement | null>>([]);
+  const audioRefsWords = useRef<(HTMLAudioElement | null)[]>([]);
+  const audioRefsSentences = useRef<(HTMLAudioElement | null)[]>([]);
 
   const playAudio = (index: number, type: "word" | "sentence") => {
-    // 🔹 إيقاف جميع الأصوات عند تشغيل أي صوت جديد
-    [...audioRefsWords.current, ...audioRefsSentences.current].forEach((audio) => {
-      if (audio) {
-        audio.pause();
-        audio.currentTime = 0;
+    [...audioRefsWords.current, ...audioRefsSentences.current].forEach(
+      (audio) => {
+        if (audio) {
+          audio.pause();
+          audio.currentTime = 0;
+        }
       }
-    });
+    );
 
-    // 🔹 تشغيل الصوت المطلوب
-    if (type === "word" && audioRefsWords.current[index]) {
+    if (type === "word") {
       audioRefsWords.current[index]?.play();
-    } else if (type === "sentence" && audioRefsSentences.current[index]) {
+    } else {
       audioRefsSentences.current[index]?.play();
     }
   };
 
   return (
     <div id="day2" className="text-3xl font-light container mx-auto">
-      {/* ✅ الكلمات مع زر الصوت */}
       {words.map((word, index) => (
         <div className="pt-4" key={index}>
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center relative">
             <div className="flex items-center gap-2">
               <h1>{word}</h1>
+
               <button
                 className="px-3 py-1 rounded-full cursor-pointer hover:scale-110 transition duration-300 text-gray-600 hover:text-black"
                 onClick={() => playAudio(index, "word")}
@@ -116,27 +120,31 @@ function Lesson2({
               </button>
             </div>
 
-            <HiArrowLongRight className="absolute left-[50%]" />
+            <HiArrowLongRight className="absolute left-1/2 -translate-x-1/2" />
 
             <h1>{wordsAr[index]}</h1>
           </div>
 
-          {/* ✅ ملف الصوت الخاص بالكلمة */}
           <audio
-            ref={(el) => (audioRefsWords.current[index] = el)}
+            ref={(el: HTMLAudioElement | null) => {
+              audioRefsWords.current[index] = el;
+            }}
             src={`/Audios/Words/${words[index]}.mp3`}
-          ></audio>
+          />
         </div>
       ))}
 
-      {/* ✅ الجمل تحت بعضها بدون سهم */}
       {sentences.map((sentence, index) => (
         <div className="pt-6" key={index}>
-          {/* ✅ الجملة الإنجليزية مع زر الصوت */}
           <div className="flex items-center gap-2">
             <h1>
-              <HighlightText text={sentence} word={words[index]} color="orange" />
+              <HighlightText
+                text={sentence}
+                word={words[index]}
+                color="orange"
+              />
             </h1>
+
             <button
               className="px-3 py-1 rounded-full cursor-pointer hover:scale-110 transition duration-300 text-gray-600 hover:text-black"
               onClick={() => playAudio(index, "sentence")}
@@ -145,14 +153,14 @@ function Lesson2({
             </button>
           </div>
 
-          {/* ✅ الجملة العربية تحت الجملة الإنجليزية */}
           <h1 className="mt-2">{sentencesAr[index]}</h1>
 
-          {/* ✅ ملف الصوت الخاص بالجملة */}
           <audio
-            ref={(el) => (audioRefsSentences.current[index] = el)}
+            ref={(el: HTMLAudioElement | null) => {
+              audioRefsSentences.current[index] = el;
+            }}
             src={`/Audios/Sentences2/${index + 1}.mp3`}
-          ></audio>
+          />
         </div>
       ))}
     </div>
